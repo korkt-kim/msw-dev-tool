@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>MSW Toolbar Example</title>
+    <script src="../dist/index.js" type="module" ></script>
+    <script src="https://unpkg.com/msw/lib/iife/index.js"></script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <button  id="button">Make a request</button>
+    <script type="module">
+        import {worker} from '../example/mocks/browser.js'
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const root = document.querySelector('#root');
+            async function enableMocking() {
+                // if (process.env.NODE_ENV !== 'development') {
+                //     return
+                // }
+                // @TODO: Enable mocking only in development mode.
+                
+                // `worker.start()` returns a Promise that resolves
+                // once the Service Worker is up and ready to intercept requests.
+                return worker().start()
+            }
+
+
+            enableMocking()
+
+            new m2s.MSWToolbar({
+                container: root,
+            });
+
+            const button = document.querySelector('#button');
+            button.addEventListener('click',(e)=>{
+                fetch('http://www.example.com/user').then(async (res) => {
+                    if (res.ok) {
+                    const content = await res.json();
+                        alert(
+                            `Here is the mocked response!: ${JSON.stringify(content)}`
+                        );
+                    }
+              })
+            })
+        });
+    </script>
+  </body>
+</html>
