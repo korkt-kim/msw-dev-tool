@@ -22,6 +22,10 @@ module.exports = {
         test: /\.svg$/,
         use: ['preact-svg-loader'],
       },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
 };
