@@ -3,7 +3,6 @@
   left: 0;
   bottom: 0;
   width: 100%;
-  min-height: 300px;
   border: 1px solid #333;
   background-color: white;
   z-index: 1;
@@ -12,14 +11,16 @@
 #header {
   position: relative;
   height: 30px;
+  display: flex;
+  align-items: center;
 }
 
 #header .close {
   position: absolute;
-  right: 10px;
-  top: 5px;
-  width: 32px;
-  height: 32px;
+  right: 1rem;
+  top: 0.4rem;
+  width: 2rem;
+  height: 2rem;
   opacity: 0.3;
 }
 
