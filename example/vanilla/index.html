@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>MSW Toolbar Example</title>
-    <script src="../dist/index.js" type="module"></script>
+    <script src="../../dist/index.js" type="module"></script>
     <script src="https://unpkg.com/msw/lib/iife/index.js"></script>
   </head>
 
@@ -13,7 +13,7 @@
     <div id="root"></div>
     <button id="button">Make a request</button>
     <script type="module">
-      import { worker } from '../example/mocks/browser.js';
+      import { worker } from './mocks/browser.js';
 
       document.addEventListener('DOMContentLoaded', function () {
         const root = document.querySelector('#root');
@@ -22,7 +22,7 @@
 
         new MSWToolbar({
           worker,
-          isEnabled: false,
+          isEnabled: true,
         });
 
         const button = document.querySelector('#button');

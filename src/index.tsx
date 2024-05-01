@@ -1,12 +1,11 @@
 import { render } from 'preact';
 import { message } from './consts';
 import { Main } from './components/Main';
-import { SetupApi } from 'msw';
+
+import { SetupWorker } from 'msw/lib/browser';
 
 export interface MSWToolbarConfig {
-  worker: SetupApi<{
-    [eventName: string]: Array<unknown>;
-  }>;
+  worker: SetupWorker;
   isEnabled?: boolean;
 }
 
