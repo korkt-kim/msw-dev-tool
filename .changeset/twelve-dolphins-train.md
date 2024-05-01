@@ -1,7 +1,11 @@
+---
+'@korkt-kim/msw-dev-tool': major
+---
+
 # MSW Dev Toolbar
 
 A simple GUI to make your MSW experience a little bit better.
-![mswDevTool screenshot](./.preview/scrn-01.png)
+![mswDevTool screenshot](../.preview/scrn-01.png)
 
 ## Install
 

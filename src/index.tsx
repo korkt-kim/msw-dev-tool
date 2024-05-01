@@ -4,9 +4,6 @@ import { Main } from './components/Main';
 import { SetupApi } from 'msw';
 
 export interface MSWToolbarConfig {
-  position?: 'bottomRight' | 'bottomLeft' | 'topRight' | 'topLeft';
-  open?: boolean;
-  onChangeOpen?: (open: boolean) => unknown;
   worker: SetupApi<{
     [eventName: string]: Array<unknown>;
   }>;
@@ -33,8 +30,7 @@ export class MSWToolbar {
     const { ...others } = config;
 
     this.options = {
-      open: false,
-      onChangeOpen: () => {},
+      isEnabled: true,
       ...others,
     };
 

@@ -17,7 +17,7 @@ import { findByUrlAndMethod, nthNumber, parseHandlers } from '../utils/util';
 import { Switch } from './Switch';
 
 export const Main = ({ options }: { options?: MSWToolbarConfig }) => {
-  const { worker } = options;
+  const { worker, isEnabled } = options;
   const [openPopover, setOpenPopover] = useState(false);
   const [mswDevToolOptions, setMswDevToolOptions] = useLocalStorageState<
     MSW_DEVTOOL_OPTION[] & { findByUrlAndMethod?: typeof findByUrlAndMethod }
@@ -67,8 +67,18 @@ export const Main = ({ options }: { options?: MSWToolbarConfig }) => {
     }
   }, [mswDevToolEnabled]);
 
+  useEffect(() => {
+    if (!isEnabled) {
+      worker.resetHandlers();
+    }
+  }, [isEnabled]);
+
   const applyHander = useCallback(() => {
     worker.resetHandlers();
+
+    if (!isEnabled) {
+      return;
+    }
 
     worker.use(
       ...mswDevToolOptions.map((mswDevToolOption) => {
