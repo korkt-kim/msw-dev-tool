@@ -8,6 +8,7 @@ export interface PopoverProps {
   open?: boolean;
   onChangeOpen?: (open: boolean) => unknown;
   children?: ReactNode;
+  header?: ReactNode;
 }
 
 export const Popover = (props: PopoverProps) => {
@@ -27,7 +28,7 @@ export const Popover = (props: PopoverProps) => {
   return (
     <div id="container">
       <PopoverContext.Provider value={value}>
-        <Header />
+        <Header>{props.header}</Header>
         {props.children}
       </PopoverContext.Provider>
     </div>

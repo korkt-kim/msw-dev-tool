@@ -4,7 +4,7 @@ import { Main } from './components/Main';
 import { SetupApi } from 'msw';
 
 export interface MSWToolbarConfig {
-  container?: Element;
+  position?: 'bottomRight' | 'bottomLeft' | 'topRight' | 'topLeft';
   open?: boolean;
   onChangeOpen?: (open: boolean) => unknown;
   worker: SetupApi<{
@@ -22,23 +22,18 @@ export class MSWToolbar {
       throw new Error(message.noConfig);
     }
 
-    const { container } = config;
-    this.container = container;
+    const defaultContainer = document.createElement('div');
+    defaultContainer.setAttribute(
+      'style',
+      `position:fixed;bottom:20px;right:20px;width:50px;height:50px;`,
+    );
+    document.body.append(defaultContainer);
+    this.container = defaultContainer;
 
-    if (!container) {
-      const defaultContainer = document.createElement('div');
-      defaultContainer.setAttribute(
-        'style',
-        'position:fixed;bottom:20px;right:20px;width:50px;height:50px;',
-      );
-      document.body.append(defaultContainer);
-      this.container = defaultContainer;
-    }
     const { ...others } = config;
 
     this.options = {
       open: false,
-      container: null,
       onChangeOpen: () => {},
       ...others,
     };
