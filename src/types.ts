@@ -9,9 +9,9 @@ export interface MSW_DEVTOOL_OPTION {
 }
 
 export interface RequestHandler extends Omit<_RequestHandler, 'info'> {
-  info: {
+  info: _RequestHandler['info'] & {
     method: string;
     path: string;
-  } & _RequestHandler['info'];
+  };
   resolver: ResponseResolver;
 }

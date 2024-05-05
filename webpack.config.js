@@ -3,6 +3,7 @@ const path = require('path');
 module.exports = {
   entry: './index.ts',
   output: {
+    library: 'mswDevTool',
     libraryTarget: 'umd',
     libraryExport: 'default',
     path: path.join(__dirname, 'dist'),
