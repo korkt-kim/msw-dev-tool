@@ -18,7 +18,7 @@ import { worker } from './mocks/browser.js';
 
 worker.start();
 
-new MSWToolbar({
+new mswDevTool({
   worker,
   isEnabled: true,
 });
