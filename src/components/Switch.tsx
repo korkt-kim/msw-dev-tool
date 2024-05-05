@@ -6,7 +6,7 @@ export interface SwitchProps extends Omit<ComponentProps<'input'>, 'value'> {}
 
 export const Switch = (props: SwitchProps) => {
   return (
-    <span class="onoff-switch-container">
+    <span className="onoff-switch-container">
       <input type="checkbox" id="onoff-switch" {...props} />
       <label for="onoff-switch"></label>
     </span>

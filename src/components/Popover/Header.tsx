@@ -8,7 +8,7 @@ export const Header = ({ children }: { children?: ReactNode }) => {
   return (
     <div id="header">
       {children}
-      <a href="#" class="close" onClick={close} />
+      <a href="#" className="close" onClick={close} />
     </div>
   );
 };
