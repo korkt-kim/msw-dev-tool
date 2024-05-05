@@ -1,34 +1,28 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 
-import Logo from '../public/msw-logo.svg';
-import '../styles/Main.css';
-import { Popover } from './Popover/index';
-import { MSWDevToolConfig } from '..';
+import Logo from './public/msw-logo.svg';
+import './styles/Main.css';
+import { Popover } from './components/Popover/index';
+import { MSWDevToolConfig } from '.';
 import { delay, http, HttpResponse } from 'msw';
-import useLocalStorageState from '../hooks/useLocalStorageState';
-import { MSW_DEVTOOL_OPTION, RequestHandler } from '../types';
-import { findByUrlAndMethod, nthNumber, parseHandlers } from '../utils/util';
-import { Switch } from './Switch';
+import useLocalStorageState from './hooks/useLocalStorageState';
+import { MSW_DEVTOOL_OPTION, RequestHandler } from './types';
+import { findByUrlAndMethod, nthNumber, parseHandlers } from './utils/util';
+import { Switch } from './components/Switch';
 import { SetupWorker } from 'msw/lib/browser';
+import { Header } from './Header';
 
 export const Main = <T extends SetupWorker>({
   options,
 }: {
   options?: MSWDevToolConfig<T>;
 }) => {
-  const { worker, isEnabled } = options;
+  const { worker, isEnabled: isMswDevToolEnabled } = options;
   const [openPopover, setOpenPopover] = useState(false);
   const [mswDevToolOptions, setMswDevToolOptions] = useLocalStorageState<
     MSW_DEVTOOL_OPTION[] & { findByUrlAndMethod?: typeof findByUrlAndMethod }
   >('msw-dev-tool-option', []);
-  const [mswDevToolEnabled, setMswDevToolEnabled] =
-    useLocalStorageState<boolean>('msw-dev-tool-enabled', true);
+
   mswDevToolOptions.findByUrlAndMethod = findByUrlAndMethod;
 
   const originalHandlers = useMemo(
@@ -64,24 +58,15 @@ export const Main = <T extends SetupWorker>({
   }, [originalHandlers]);
 
   useEffect(() => {
-    if (mswDevToolEnabled) {
-      (worker as unknown as { start: Function }).start();
-      applyHander();
-    } else {
-      (worker as unknown as { stop: Function }).stop();
-    }
-  }, [mswDevToolEnabled]);
-
-  useEffect(() => {
-    if (!isEnabled) {
+    if (!isMswDevToolEnabled) {
       worker.resetHandlers();
     }
-  }, [isEnabled]);
+  }, [isMswDevToolEnabled]);
 
-  const applyHander = useCallback(() => {
+  const applyHandler = useCallback(() => {
     worker.resetHandlers();
 
-    if (!isEnabled) {
+    if (!isMswDevToolEnabled) {
       return;
     }
 
@@ -124,7 +109,7 @@ export const Main = <T extends SetupWorker>({
         return [...prev];
       });
 
-      applyHander();
+      applyHandler();
     },
     [],
   );
@@ -141,7 +126,7 @@ export const Main = <T extends SetupWorker>({
         return [...prev];
       });
 
-      applyHander();
+      applyHandler();
     },
     [],
   );
@@ -158,24 +143,28 @@ export const Main = <T extends SetupWorker>({
         return [...prev];
       });
 
-      applyHander();
+      applyHandler();
     },
     [],
+  );
+
+  const onChangeMswDevToolEnabeld = useCallback(
+    (enabled: boolean) => {
+      if (enabled) {
+        worker.start();
+        applyHandler();
+      } else {
+        worker.stop();
+      }
+    },
+    [worker, applyHandler],
   );
 
   return (
     <div>
       <Popover
         header={
-          <div style="display:flex; align:center;padding-left:1rem; gap:0.3rem;">
-            <Switch
-              checked={mswDevToolEnabled}
-              onChange={(e) =>
-                setMswDevToolEnabled((e.target as HTMLInputElement).checked)
-              }
-            />
-            <label>Enable MSW</label>
-          </div>
+          <Header onChangeMswDevToolEnabeld={onChangeMswDevToolEnabeld} />
         }
         open={openPopover}
         onChangeOpen={(open) => setOpenPopover(open)}
