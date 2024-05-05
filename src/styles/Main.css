@@ -12,47 +12,47 @@
   height: 100%;
 }
 
-.mock-handler-header {
+ul.mock-handler-list {
+  padding: 0;
+  list-style-type: none;
+  margin-block: 5px;
+  max-height: 300px;
+  overflow: auto;
+}
+
+ul.mock-handler-list .mock-handler-header {
   display: table;
   width: 100%;
   table-layout: fixed;
 }
 
-.mock-handler-header > * {
+ul.mock-handler-list .mock-handler-header > * {
   display: table-cell;
   font-weight: bold;
   padding: 0 20px;
 }
 
-ul.content {
-  padding: 0;
-  max-height: 300px;
-  overflow: auto;
-  margin-block: 5px;
-  list-style-type: none;
-}
-
-ul.content li {
+ul.mock-handler-list li {
   margin-block: 5px;
 }
 
-ul.content li.url {
+ul.mock-handler-list li.url {
   background: black;
   color: white;
   font-size: 1.2rem;
 }
 
-ul.content li.mock-handler-wrapper {
+ul.mock-handler-list li.mock-handler-wrapper {
   display: table;
   width: 100%;
   table-layout: fixed;
 }
 
-ul.content li.mock-handler-wrapper .mock-handler {
+ul.mock-handler-list li.mock-handler-wrapper .mock-handler {
   display: table-row;
 }
 
-ul.content li.mock-handler-wrapper .mock-handler > * {
+ul.mock-handler-list li.mock-handler-wrapper .mock-handler > * {
   display: table-cell;
   padding: 0 20px;
 }

@@ -8,7 +8,6 @@ import { delay, http, HttpResponse } from 'msw';
 import useLocalStorageState from './hooks/useLocalStorageState';
 import { MSW_DEVTOOL_OPTION, RequestHandler } from './types';
 import { findByUrlAndMethod, nthNumber, parseHandlers } from './utils/util';
-import { Switch } from './components/Switch';
 import { SetupWorker } from 'msw/lib/browser';
 import { Header } from './Header';
 
@@ -19,6 +18,7 @@ export const Main = <T extends SetupWorker>({
 }) => {
   const { worker, isEnabled: isMswDevToolEnabled } = options;
   const [openPopover, setOpenPopover] = useState(false);
+  const [searchInput, setSearchInput] = useState<string | RegExp>('');
   const [mswDevToolOptions, setMswDevToolOptions] = useLocalStorageState<
     MSW_DEVTOOL_OPTION[] & { findByUrlAndMethod?: typeof findByUrlAndMethod }
   >('msw-dev-tool-option', []);
@@ -169,106 +169,153 @@ export const Main = <T extends SetupWorker>({
         open={openPopover}
         onChangeOpen={(open) => setOpenPopover(open)}
       >
-        <ul class="content">
-          <div class="mock-handler-header">
-            <span>Method</span>
-            <span>Mock Response</span>
-            <span>Status Code</span>
-            <span>Delay</span>
-          </div>
-          {Object.entries(parseHandlers(originalHandlers)).map(
-            ([url, handler]) => {
-              return (
-                <>
-                  <li class="url" key={url}>
-                    {url}
-                  </li>
-                  <li class="mock-handler-wrapper">
-                    {Object.entries(handler).map(([method, options]) => {
-                      return (
-                        <div class="mock-handler" key={`${url}-${method}`}>
-                          <span class="method">{method}</span>
-                          <span class="response-select-wrapper">
-                            <select
-                              class="response"
-                              value={
-                                mswDevToolOptions.findByUrlAndMethod(
-                                  url,
-                                  method.toLocaleLowerCase(),
-                                )?.responseIndex
-                              }
-                              onChange={(e) => {
-                                onChangeResponseOption(
-                                  url,
-                                  method.toLocaleLowerCase(),
-                                  Number((e.target as HTMLInputElement).value),
-                                );
-                              }}
-                            >
-                              {options.map((_: unknown, index: number) => {
-                                return (
-                                  <option value={index} key={index}>
-                                    {index + 1 + nthNumber(index + 1)} option
-                                  </option>
-                                );
-                              })}
-                            </select>
-                          </span>
-                          <span class="status-input-wrapper">
-                            <input
-                              class="status"
-                              type="text"
-                              value={
-                                mswDevToolOptions.findByUrlAndMethod(
-                                  url,
-                                  method.toLocaleLowerCase(),
-                                )?.status ?? '200'
-                              }
-                              onChange={(e) => {
-                                onChangeStatus(
-                                  url,
-                                  method.toLocaleLowerCase(),
-                                  (e.target as HTMLInputElement).value,
-                                );
-                              }}
-                            />
-                          </span>
-                          <span class="delay-input-wrapper">
-                            <input
-                              class="delay"
-                              type="number"
-                              value={
-                                mswDevToolOptions.findByUrlAndMethod(
-                                  url,
-                                  method.toLocaleLowerCase(),
-                                )?.delay ?? 0
-                              }
-                              onChange={(e) => {
-                                const value = Number(
-                                  (e.target as HTMLInputElement).value,
-                                );
+        <div className="content">
+          <input
+            className="mock-url-search-input"
+            type="text"
+            placeholder="Input url to search"
+            onChange={(e) => {
+              const value = (e.target as HTMLInputElement).value;
 
-                                if (isNaN(value)) {
-                                  console.warn('Number only allowed');
-                                  return;
-                                }
-
-                                onChangeDelay(url, method.toLowerCase(), value);
-                              }}
-                            />
-                            <span style={{ fontSize: '0.8rem' }}>ms</span>
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </li>
-                </>
+              setSearchInput(
+                typeof searchInput === 'string' ? value : new RegExp(value),
               );
-            },
-          )}
-        </ul>
+            }}
+          />
+          <input
+            type="checkbox"
+            id="mock-url-search-checkbox"
+            onChange={(e) => {
+              setSearchInput(
+                (e.target as HTMLInputElement).checked
+                  ? new RegExp(searchInput)
+                  : searchInput instanceof RegExp
+                    ? searchInput.toString().slice(1, -1)
+                    : searchInput,
+              );
+            }}
+          />
+          <label for="mock-url-search-checkbox">Regexp</label>
+
+          <ul className="mock-handler-list">
+            <div className="mock-handler-header">
+              <span>Method</span>
+              <span>Mock Response</span>
+              <span>Status Code</span>
+              <span>Delay</span>
+            </div>
+            {Object.entries(parseHandlers(originalHandlers)).map(
+              ([url, handler]) => {
+                if (
+                  searchInput &&
+                  ((typeof searchInput === 'string' &&
+                    !url.includes(searchInput)) ||
+                    (searchInput instanceof RegExp && !searchInput.test(url)))
+                ) {
+                  return null;
+                }
+
+                if (typeof url)
+                  return (
+                    <div key={url}>
+                      <li className="url">{url}</li>
+                      <li className="mock-handler-wrapper">
+                        {Object.entries(handler).map(([method, options]) => {
+                          return (
+                            <div
+                              className="mock-handler"
+                              key={`${url}-${method}`}
+                            >
+                              <span className="method">{method}</span>
+                              <span className="response-select-wrapper">
+                                <select
+                                  className="response"
+                                  value={
+                                    mswDevToolOptions.findByUrlAndMethod(
+                                      url,
+                                      method.toLocaleLowerCase(),
+                                    )?.responseIndex
+                                  }
+                                  onChange={(e) => {
+                                    onChangeResponseOption(
+                                      url,
+                                      method.toLocaleLowerCase(),
+                                      Number(
+                                        (e.target as HTMLInputElement).value,
+                                      ),
+                                    );
+                                  }}
+                                >
+                                  {options.map((_: unknown, index: number) => {
+                                    return (
+                                      <option value={index} key={index}>
+                                        {index + 1 + nthNumber(index + 1)}{' '}
+                                        option
+                                      </option>
+                                    );
+                                  })}
+                                </select>
+                              </span>
+                              <span className="status-input-wrapper">
+                                <input
+                                  className="status"
+                                  type="text"
+                                  value={
+                                    mswDevToolOptions.findByUrlAndMethod(
+                                      url,
+                                      method.toLocaleLowerCase(),
+                                    )?.status ?? '200'
+                                  }
+                                  onChange={(e) => {
+                                    onChangeStatus(
+                                      url,
+                                      method.toLocaleLowerCase(),
+                                      (e.target as HTMLInputElement).value,
+                                    );
+                                  }}
+                                />
+                              </span>
+                              <span className="delay-input-wrapper">
+                                <input
+                                  className="delay"
+                                  type="number"
+                                  value={
+                                    mswDevToolOptions.findByUrlAndMethod(
+                                      url,
+                                      method.toLocaleLowerCase(),
+                                    )?.delay ?? 0
+                                  }
+                                  onChange={(e) => {
+                                    const value = Number(
+                                      (e.target as HTMLInputElement).value,
+                                    );
+
+                                    if (isNaN(value)) {
+                                      console.warn('Number only allowed');
+                                      return;
+                                    }
+
+                                    onChangeDelay(
+                                      url,
+                                      method.toLowerCase(),
+                                      value,
+                                    );
+                                  }}
+                                />
+                                <span style={{ fontSize: '0.8rem' }}>ms</span>
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </li>
+                    </div>
+                  );
+              },
+            )}
+          </ul>
+        </div>
       </Popover>
-      <a href="#" class="logo-button" onClick={() => setOpenPopover(true)}>
+      <a href="#" className="logo-button" onClick={() => setOpenPopover(true)}>
         <Logo />
       </a>
     </div>
