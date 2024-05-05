@@ -1,6 +1,6 @@
 import { worker } from './mocks/browser';
+import mswDevTool from '@korkt-kim/msw-dev-tool';
 
-import mswDevTool from '../../../dist/index';
 import './App.css';
 import { useEffect } from 'react';
 

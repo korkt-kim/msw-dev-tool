@@ -1,7 +1,7 @@
 import { render } from 'preact';
 import { message } from './consts';
-import { Main } from './components/Main';
-// import { SetupWorker } from './types';
+import { Main } from './Main';
+
 import { SetupWorker, SetupWorkerApi } from 'msw/lib/browser';
 
 export interface MSWDevToolConfig<T> {
