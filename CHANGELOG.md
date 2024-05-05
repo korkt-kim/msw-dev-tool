@@ -1,5 +1,11 @@
 # @korkt-kim/msw-dev-tool
 
+## 0.1.2
+
+### Patch Changes
+
+- 37676c5: Add url search function
+
 ## 0.1.1
 
 ### Patch Changes
