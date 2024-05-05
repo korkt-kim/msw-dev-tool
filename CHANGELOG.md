@@ -1,5 +1,13 @@
 # @korkt-kim/msw-dev-tool
 
+## 0.1.1
+
+### Patch Changes
+
+- 4b71f9f: - msw-dev-tool-enabled 기본값 true로 변경
+  - init config 매개변수를 필수값으로 변경
+  - init config 내 worker 필드 타입 수정
+
 ## 0.1.0
 
 ### Major Changes
@@ -20,7 +28,7 @@
   ## Usage
 
   ```js
-  import { worker } from './mocks/browser.js';
+  import { worker } from "./mocks/browser.js";
 
   worker.start();
 
