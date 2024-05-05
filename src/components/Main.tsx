@@ -9,21 +9,26 @@ import {
 import Logo from '../public/msw-logo.svg';
 import '../styles/Main.css';
 import { Popover } from './Popover/index';
-import { MSWToolbarConfig } from '..';
+import { MSWDevToolConfig } from '..';
 import { delay, http, HttpResponse } from 'msw';
 import useLocalStorageState from '../hooks/useLocalStorageState';
 import { MSW_DEVTOOL_OPTION, RequestHandler } from '../types';
 import { findByUrlAndMethod, nthNumber, parseHandlers } from '../utils/util';
 import { Switch } from './Switch';
+import { SetupWorker } from 'msw/lib/browser';
 
-export const Main = ({ options }: { options?: MSWToolbarConfig }) => {
+export const Main = <T extends SetupWorker>({
+  options,
+}: {
+  options?: MSWDevToolConfig<T>;
+}) => {
   const { worker, isEnabled } = options;
   const [openPopover, setOpenPopover] = useState(false);
   const [mswDevToolOptions, setMswDevToolOptions] = useLocalStorageState<
     MSW_DEVTOOL_OPTION[] & { findByUrlAndMethod?: typeof findByUrlAndMethod }
   >('msw-dev-tool-option', []);
   const [mswDevToolEnabled, setMswDevToolEnabled] =
-    useLocalStorageState<boolean>('msw-dev-tool-enabled', false);
+    useLocalStorageState<boolean>('msw-dev-tool-enabled', true);
   mswDevToolOptions.findByUrlAndMethod = findByUrlAndMethod;
 
   const originalHandlers = useMemo(

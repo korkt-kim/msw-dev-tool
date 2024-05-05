@@ -1,3 +1,3 @@
-import { MSWToolbar } from './src/index';
+import { MSWDevTool } from './src/index';
 
-export default { MSWToolbar };
+export default MSWDevTool;

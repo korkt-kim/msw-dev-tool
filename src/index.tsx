@@ -1,19 +1,19 @@
 import { render } from 'preact';
 import { message } from './consts';
 import { Main } from './components/Main';
+// import { SetupWorker } from './types';
+import { SetupWorker, SetupWorkerApi } from 'msw/lib/browser';
 
-import { SetupWorker } from 'msw/lib/browser';
-
-export interface MSWToolbarConfig {
-  worker: SetupWorker;
+export interface MSWDevToolConfig<T> {
+  worker: T;
   isEnabled?: boolean;
 }
 
-export class MSWToolbar {
+export class MSWDevTool<T> {
   private container: Element;
-  private options: MSWToolbarConfig;
+  private options: MSWDevToolConfig<T>;
 
-  constructor(config?: MSWToolbarConfig) {
+  constructor(config: MSWDevToolConfig<T>) {
     if (!config) {
       throw new Error(message.noConfig);
     }
@@ -37,7 +37,10 @@ export class MSWToolbar {
   }
 
   render() {
-    render(<Main options={this.options} />, this.container);
+    render(
+      <Main options={this.options as MSWDevToolConfig<SetupWorker>} />,
+      this.container,
+    );
   }
 
   destroy() {}
