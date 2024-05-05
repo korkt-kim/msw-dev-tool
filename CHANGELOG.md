@@ -1,5 +1,12 @@
 # @korkt-kim/msw-dev-tool
 
+## 0.1.3
+
+### Patch Changes
+
+- c07f946: - Fix ReadMe
+  - Fix usage example on react
+
 ## 0.1.2
 
 ### Patch Changes
