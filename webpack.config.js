@@ -15,8 +15,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: ['ts-loader'],
+        test: /\.(m?js|ts)x?$/,
+        exclude: /node_modules/,
+        use: ['babel-loader', 'ts-loader'], // babel은 빌드시 타입검사를 해주지 않으므로 ts-loader도 함께 설정
       },
       {
         test: /\.svg$/,
